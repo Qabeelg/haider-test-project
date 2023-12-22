@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "_user")
-@Data
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -25,10 +24,10 @@ public class User implements UserDetails {
     private String password;
     private Integer age;
 
-    private boolean isAccountNonExpired;
-    private boolean isCredentialsNonExpired;
-    private boolean isAccountNonLocked;
-    boolean isEnabled;
+    private boolean isAccountNonExpired = true;
+    private boolean isCredentialsNonExpired = true;
+    private boolean isAccountNonLocked = true;
+    boolean isEnabled = true;
 
     @OneToMany(fetch = FetchType.LAZY)
     private List<Token> tokens;
@@ -48,11 +47,25 @@ public class User implements UserDetails {
         this.age = age;
     }
 
-    public User(String username, String email, String password, Integer age) {
+    public User(String username, String email, String password, Integer age, Set<RoleEnum> roles) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.age = age;
+        this.roles = roles;
+    }
+
+    public User(String username, String email, String password, Integer age, boolean isAccountNonExpired, boolean isCredentialsNonExpired, boolean isAccountNonLocked, boolean isEnabled, List<Token> tokens, Set<RoleEnum> roles) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.age = age;
+        this.isAccountNonExpired = true;
+        this.isCredentialsNonExpired = true;
+        this.isAccountNonLocked = true;
+        this.isEnabled = true;
+        this.tokens = tokens;
+        this.roles = roles;
     }
 
     @Override
@@ -81,4 +94,79 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return isEnabled;
     }
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+     @Override
+    public String getUsername() {
+        return email;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public void setAccountNonExpired(boolean accountNonExpired) {
+        isAccountNonExpired = accountNonExpired;
+    }
+
+    public void setCredentialsNonExpired(boolean credentialsNonExpired) {
+        isCredentialsNonExpired = credentialsNonExpired;
+    }
+
+    public void setAccountNonLocked(boolean accountNonLocked) {
+        isAccountNonLocked = accountNonLocked;
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
+    }
+
+    public List<Token> getTokens() {
+        return tokens;
+    }
+
+    public void setTokens(List<Token> tokens) {
+        this.tokens = tokens;
+    }
+
+    public Set<RoleEnum> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<RoleEnum> roles) {
+        this.roles = roles;
+    }
+
+
 }

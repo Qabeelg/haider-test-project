@@ -34,22 +34,6 @@ public interface TokenRepository extends JpaRepository<Token, Long> {
 
 
 
-    @Modifying
-//    @Transactional
-    @Query("DELETE FROM Token t WHERE t.users.email = :email")
-    void deleteAllByUsersEmail(@Param("email") String email);
-
-
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM Token t WHERE t.users.email = :email AND t.isExpire = true AND t.isRevoke = true")
-    void deleteAllRevokeTokensByEmail(@Param("email") String email);
-
-
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM Token t WHERE t.isExpire = true AND t.isRevoke = true")
-    void deleteAllRevokeTokens();
 
 
 

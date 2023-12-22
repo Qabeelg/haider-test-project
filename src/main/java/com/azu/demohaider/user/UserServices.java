@@ -1,5 +1,8 @@
 package com.azu.demohaider.user;
 
+import com.azu.demohaider.user.securirty.config.JwtService;
+import com.azu.demohaider.user.securirty.token.Token;
+import com.azu.demohaider.user.securirty.token.TokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,10 +18,15 @@ public class UserServices {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final JwtService jwtService;
+    private final TokenRepository tokenRepository;
+
     @Autowired
-    public UserServices(UserRepository repository, @Qualifier("PassEncoder") PasswordEncoder passwordEncoder) {
+    public UserServices(UserRepository repository, @Qualifier("PassEncoder") PasswordEncoder passwordEncoder, JwtService jwtService, TokenRepository tokenRepository) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
+        this.tokenRepository = tokenRepository;
     }
 
     public void createUser(UserRegistrationsRequest request){
@@ -26,9 +34,22 @@ public class UserServices {
                 request.getUsername(),
                 request.getEmail(),
                 passwordEncoder.encode(request.getPassword()),
-                request.getAge()
+                request.getAge(),
+                request.getRoleEnums()
         );
         repository.save(newUser);
+      String token =  jwtService.generateToken(newUser, newUser.getId());
+        saveUserToken(newUser,token );
+    }
+
+    private void saveUserToken(User user, String jwtToken) {
+        var token = Token.builder()
+                .users(user)
+                .token(jwtToken)
+                .isExpire(false)
+                .isRevoke(false)
+                .build();
+        tokenRepository.save(token);
     }
 
 
